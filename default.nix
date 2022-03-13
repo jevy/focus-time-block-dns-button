@@ -85,5 +85,10 @@ pkgs.dockerTools.buildImage {
   ];
   config = {
     Cmd = [ "adguardhome" "-c" adguard_config "--no-check-update"];
+    ExposedPorts = {
+      "80/tcp" = {};
+      "53/udp" = {};
+      "3000/tcp" = {};
+    };
   };
 }
