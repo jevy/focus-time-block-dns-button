@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  adguard:
+    image: adguard/adguardhome
+    # build: .
+    ports:
+      - "3000:3000"
+      - "3001:80"
+      - "53:53/udp"
+    volumes:
+      - ./adguard-conf:/opt/adguardhome/conf
+      - ./adguard-data:/opt/adguardhome/data
+    links:
+      - mosquitto
+  mosquitto:
+    image: eclipse-mosquitto
+volumes:
+  logvolume01: {}
