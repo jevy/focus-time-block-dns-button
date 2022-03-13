@@ -4,15 +4,17 @@ services:
     image: adguard/adguardhome
     # build: .
     ports:
-      - "3000:3000"
-      - "3001:80"
+      - "3000:3000/tcp"
+      - "3001:80/tcp"
       - "53:53/udp"
     volumes:
       - ./adguard-conf:/opt/adguardhome/conf
       - ./adguard-data:/opt/adguardhome/data
-    links:
-      - mosquitto
   mosquitto:
     image: eclipse-mosquitto
+    volumes:
+      - ./mosquitto-conf:/mosquitto/config
+    ports:
+      - "1883:1883/tcp"
 volumes:
   logvolume01: {}
