@@ -21,4 +21,9 @@ just add the rule for blocking that you want. For example, to block all of Slack
 
 # How it works
 
+## Testing it out 
 To recreate to blocking you can run using `httpie`: `http -a admin:password POST http://localhost:3001/control/dns_config <<<'{"protection_enabled": true}'`
+
+To try to manually trigger a message to trigger the blocking: Just send literally any message to the `focus-time` topic:
+`mosquitto_pub -h 127.0.0.1 -t focus-time -m "sup"`
+

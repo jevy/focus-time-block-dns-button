@@ -1,6 +1,11 @@
 import paho.mqtt.client as mqtt
 import requests
 from requests.auth import HTTPBasicAuth
+import sched
+from datetime import datetime
+import time
+
+s = sched.scheduler()
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -17,18 +22,27 @@ def on_message(client, userdata, message):
     if message.topic == 'focus-time':
         print("Focus time mqtt message detected")
         blocking_enabled()
+        schedule_blocking_disabled(30)
         
 def blocking_enabled():
+    print("Blocking Enabled : ", datetime.now(), "\n")
     requests.post( 'http://adguard/control/dns_config', 
       json={'protection_enabled': True},
       auth=HTTPBasicAuth('admin', 'password')
     )
 
 def blocking_disabled():
+    print("Blocking Disabled : ", datetime.now(), "\n")
     requests.post( 'http://adguard/control/dns_config', 
       json={'protection_enabled': False},
       auth=HTTPBasicAuth('admin', 'password')
     )
+
+def schedule_blocking_disabled(minutes):
+    print("Event being schduled now : ", datetime.now(), "\n")
+    scheduled_disable = s.enter(seconds * 60, 1, blocking_disabled)
+    print("Event Created : ", scheduled_disable)
+    s.run()
 
 client = mqtt.Client("adguard-middleware")
 client.on_connect = on_connect
