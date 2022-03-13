@@ -1,5 +1,11 @@
+`nix-build`
+`docker load < result`
+
 Running:
-`docker run -it --entrypoint /bin/adguardhome -p 3000:3000 -p 3001:80 -p 53:53 red-button-dns:f3vcrqlbx5vfyd9h68yhzvf9y6x4fw24`
+`docker run -p 3000:3000 -p 3001:80 -p 53:53/udp <imagename>`
+
+To drop into a shell:
+`docker run -it --entrypoint /bin/bash -p 3000:3000 -p 3001:80 -p 53:53 <imagename>`
 
 # Adguard
 
@@ -7,3 +13,8 @@ The included config is the default with a few changes:
 - username: `admin`, password: `password`
 
 To configure it, you can review the configuration options here: https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration
+
+# Customize what to block
+Change the array of services in: `blocked_services`. Full list is in the [Adguard Repo in SERVICES](https://github.com/AdguardTeam/AdGuardHome/blob/master/client/src/helpers/constants.js)
+OR
+just add the rule for blocking that you want. For example, to block all of Slack (so many distracting notifications!!) and it's subdomains: `||slack.com^` as new line in the `user_rules`. More details on how to write the rules is on the [Adguard page](https://github.com/AdguardTeam/AdGuardHome/wiki/Hosts-Blocklists#adblock-style)
