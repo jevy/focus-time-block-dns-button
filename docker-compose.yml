@@ -2,6 +2,7 @@ version: "3.9"
 services:
   adguard:
     image: adguard/adguardhome
+    restart: always
     # build: .
     ports:
       - "3000:3000/tcp"
@@ -12,12 +13,14 @@ services:
       - ./adguard-data:/opt/adguardhome/data
   mosquitto:
     image: eclipse-mosquitto
+    restart: always
     volumes:
       - ./mosquitto-conf:/mosquitto/config
     ports:
       - "1883:1883/tcp"
   middleware:
     build: ./middleware/
+    restart: always
     depends_on:
       - mosquitto
       - adguard
