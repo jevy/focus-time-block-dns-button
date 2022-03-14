@@ -40,7 +40,7 @@ def blocking_disabled():
 
 def schedule_blocking_disabled(minutes):
     print("Event being schduled now : ", datetime.now(), "\n")
-    scheduled_disable = s.enter(seconds * 60, 1, blocking_disabled)
+    scheduled_disable = s.enter(minutes * 60, 1, blocking_disabled)
     print("Event Created : ", scheduled_disable)
     s.run()
 
