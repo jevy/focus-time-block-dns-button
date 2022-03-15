@@ -23,9 +23,14 @@ def on_message(client, userdata, message):
         print("Focus time mqtt message detected")
         blocking_enabled()
         schedule_blocking_disabled(30)
+    elif message.topic == 'cancel-focus-time':
+        print("Detected Cancelled focus time")
+        blocking_disabled()
+        
         
 def blocking_enabled():
     print("Blocking Enabled : ", datetime.now(), "\n")
+    clear_queue()
     requests.post( 'http://adguard/control/dns_config', 
       json={'protection_enabled': True},
       auth=HTTPBasicAuth('admin', 'password')
@@ -33,6 +38,7 @@ def blocking_enabled():
 
 def blocking_disabled():
     print("Blocking Disabled : ", datetime.now(), "\n")
+    clear_queue()
     requests.post( 'http://adguard/control/dns_config', 
       json={'protection_enabled': False},
       auth=HTTPBasicAuth('admin', 'password')
@@ -40,9 +46,14 @@ def blocking_disabled():
 
 def schedule_blocking_disabled(minutes):
     print("Event being schduled now : ", datetime.now(), "\n")
-    scheduled_disable = s.enter(minutes * 60, 1, blocking_disabled)
+    scheduled_disable = s.enter(minutes * 60, 1, blocking_disabled) #Timer is in seconds
     print("Event Created : ", scheduled_disable)
     s.run()
+
+def clear_queue():
+    print("Clearing scheduled event queue")
+    for event in s.queue:
+        s.cancel(event)
 
 client = mqtt.Client("adguard-middleware")
 client.on_connect = on_connect
@@ -51,6 +62,7 @@ client.on_message = on_message
 print("Attempting to connect")
 client.connect("mosquitto", 1883, 60)
 client.subscribe('focus-time')
+client.subscribe('cancel-focus-time')
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
