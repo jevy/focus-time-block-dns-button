@@ -48,7 +48,6 @@ def schedule_blocking_disabled(minutes):
     print("Event being schduled now : ", datetime.now(), "\n")
     scheduled_disable = s.enter(minutes * 60, 1, blocking_disabled) #Timer is in seconds
     print("Event Created : ", scheduled_disable)
-    s.run()
 
 def clear_queue():
     print("Clearing scheduled event queue")
@@ -69,4 +68,10 @@ client.subscribe('cancel-focus-time')
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
 client.loop_forever()
+while True:
+    next_ev = s.run(False)
+    if next_ev is not None:
+        time.sleep(min(1, next_ev))
+    else:
+        time.sleep(1)
 print("Reached end")
