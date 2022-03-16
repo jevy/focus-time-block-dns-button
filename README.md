@@ -19,13 +19,11 @@ Or just turn on and off any of the pre-configured "services"
 # Debugging
 
 ## The Adguard API to (un)block
-To recreate to blocking you can run using `httpie`: `http -a admin:password POST http://localhost:3001/control/dns_config <<<'{"protection_enabled": true}'`
+To recreate to blocking you can run using `httpie`:
+```http -a admin:password POST http://localhost:3001/control/dns_config <<<'{"protection_enabled": true}'```
 
 ## Sending MQTT messages
 
 Install https://mosquitto.org/ on your local machine. Then you can:
-                                                                                                                              
-- manually trigger a message to trigger the blocking: Just send any message to the `focus-time` topic:
-`mosquitto_pub -h <ip> -t focus-time -m "sup"`
-                                                                                                                              - Watch the events going by: `moquitto_sub -h <ip> -t focus-time`
-                                                                                                                              
+- manually trigger a message to trigger the blocking: Just send any message to the `focus-time` topic: `mosquitto_pub -h <ip> -t focus-time -m "sup"`
+- watch the mqtt events: `mosquitto_sub -h <ip> -t focus-time`
