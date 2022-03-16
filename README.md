@@ -1,29 +1,31 @@
-`nix-build`
-`docker load < result`
+# Getting Started
 
-Running:
-`docker run -p 3000:3000 -p 3001:80 -p 53:53/udp <imagename>`
+On a Raspberry Pi, install Docker. Then
 
-To drop into a shell:
-`docker run -it --entrypoint /bin/bash -p 3000:3000 -p 3001:80 -p 53:53 <imagename>`
+1. Build a docker image for the Python app: `docker-compose build`
+2. Run it: `docker-compose up -d`
 
-# Adguard
+# Configuring it
 
-The included config is the default with a few changes:
+## What you want to Block
+
+Visit http://<IP>:80/ to open up Adguard
 - username: `admin`, password: `password`
 
-To configure it, you can review the configuration options here: https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration
+Add the domains in the DNS filter
+Or just turn on and off any of the pre-configured "services"
+ 
 
-# Customize what to block
-Change the array of services in: `blocked_services`. Full list is in the [Adguard Repo in SERVICES](https://github.com/AdguardTeam/AdGuardHome/blob/master/client/src/helpers/constants.js)
-OR
-just add the rule for blocking that you want. For example, to block all of Slack (so many distracting notifications!!) and it's subdomains: `||slack.com^` as new line in the `user_rules`. More details on how to write the rules is on the [Adguard page](https://github.com/AdguardTeam/AdGuardHome/wiki/Hosts-Blocklists#adblock-style)
+# Debugging
 
-# How it works
-
-## Testing it out 
+## The Adguard API to (un)block
 To recreate to blocking you can run using `httpie`: `http -a admin:password POST http://localhost:3001/control/dns_config <<<'{"protection_enabled": true}'`
 
-To try to manually trigger a message to trigger the blocking: Just send literally any message to the `focus-time` topic:
-`mosquitto_pub -h 127.0.0.1 -t focus-time -m "sup"`
+## Sending MQTT messages
 
+Install https://mosquitto.org/ on your local machine. Then you can:
+                                                                                                                              
+- manually trigger a message to trigger the blocking: Just send any message to the `focus-time` topic:
+`mosquitto_pub -h <ip> -t focus-time -m "sup"`
+                                                                                                                              - Watch the events going by: `moquitto_sub -h <ip> -t focus-time`
+                                                                                                                              
